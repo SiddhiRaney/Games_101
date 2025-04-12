@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3-Tier Birthday Memory Game</title>
+  <style>
+    body {
+      background-color: #fff0f5;
+      font-family: 'Comic Sans MS', cursive;
+      text-align: center;
+      padding: 2em;
+    }
+
+    .cake {
+      margin: auto;
+      position: relative;
+    }
+
+    .tier {
+      margin: 0 auto;
+      border: 3px solid #d63384;
+      border-radius: 10px;
+      position: relative;
+      animation: bounce 0.5s infinite alternate;
+    }
+
+    .tier1 { width: 100px; height: 60px; }
+    .tier2 { width: 140px; height: 60px; margin-top: -10px; }
+    .tier3 { width: 180px; height: 60px; margin-top: -10px; }
+
+    .topping {
+      font-size: 2em;
+      position: absolute;
+      top: -35px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .candle {
+      width: 6px;
+      height: 20px;
+      background-color: #333;
+      position: absolute;
+      top: -20px;
+      border-radius: 2px;
+    }
+
+    .flame {
+      width: 10px;
+      height: 10px;
+      background-color: orange;
+      border-radius: 50%;
+      position: absolute;
+      top: -10px;
+      animation: flicker 0.2s infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.2); }
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-5px); }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .question {
+      margin-top: 2em;
+      font-size: 1.2em;
+    }
+
+    input {
+      padding: 0.4em;
+      font-size: 1em;
+      margin-top: 0.5em;
+    }
+
+    button {
+      margin-top: 1em;
+      padding: 0.5em 1em;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #result {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎂 3-Tier Birthday Memory Game</h1>
+
+  <div id="cake" class="cake">
+    <div class="topping" id="toppingEmoji">🍒</div>
+    <div id="tier1" class="tier tier1"></div>
+    <div id="tier2" class="tier tier2"></div>
+    <div id="tier3" class="tier tier3"></div>
+  </div>
+
+  <div id="quiz" class="question hidden">
+    <div>1. How many candles were on the cake?</div>
+    <input id="q1" type="number"><br>
+
+    <div>2. What was the color of the cake?</div>
+    <input id="q2" type="text"><br>
+
+    <div>3. What was the topping emoji? (ex: 🍓)</div>
+    <input id="q3" type="text"><br>
+
+    <button onclick="checkAnswers()">Submit</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Random values
+    const colors = ['pink', 'skyblue', 'violet', 'peachpuff', 'plum'];
+    const toppings = ['🍓', '🍒', '🍬', '🍭', '🍇'];
+    const cakeColor = colors[Math.floor(Math.random() * colors.length)];
+    const topping = toppings[Math.floor(Math.random() * toppings.length)];
+    const candles = Math.floor(Math.random() * 6) + 1;
+
+    // Set cake color and topping
+    document.getElementById('tier1').style.backgroundColor = cakeColor;
+    document.getElementById('tier2').style.backgroundColor = cakeColor;
+    document.getElementById('tier3').style.backgroundColor = cakeColor;
+    document.getElementById('toppingEmoji').textContent = topping;
+
+    // Add candles on top
+    for (let i = 0; i < candles; i++) {
+      const candle = document.createElement('div');
+      candle.className = 'candle';
+      candle.style.left = (30 + i * 10) + 'px';
+
+      const flame = document.createElement('div');
+      flame.className = 'flame';
+      flame.style.left = '-2px';
+
+      candle.appendChild(flame);
+      document.getElementById('tier1').appendChild(candle);
+    }
+
+    // Hide cake after 5 seconds and show quiz
+    setTimeout(() => {
+      document.getElementById('cake').classList.add('hidden');
+      document.getElementById('quiz').classList.remove('hidden');
+    }, 5000);
+
+    // Check answers
+    function checkAnswers() {
+      const a1 = parseInt(document.getElementById('q1').value);
+      const a2 = document.getElementById('q2').value.toLowerCase().trim();
+      const a3 = document.getElementById('q3').value.trim();
+
+      let result = '';
+      let correct = 0;
+
+      if (a1 === candles) correct++;
+      if (a2 === cakeColor.toLowerCase()) correct++;
+      if (a3 === topping) correct++;
+
+      if (correct === 3) {
+        result = "🎉 Perfect! You got all 3 right!";
+        document.getElementById('result').style.color = "green";
+      } else {
+        result = `😢 You got ${correct}/3 right. It was ${candles} candles, ${cakeColor} color, and ${topping} topping.`;
+        document.getElementById('result').style.color = "red";
+      }
+
+      document.getElementById('result').textContent = result;
+    }
+  </script>
+
+</body>
+</html>
